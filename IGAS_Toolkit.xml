@@ -1,0 +1,22 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd">
+	<!-- Init -->
+	<Script file = "IGAS_Toolkit.lua"/>
+
+	<!-- Modules -->
+	<Include file = "Modules\AutoRepair\AutoRepair.xml"/>
+	<Include file = "Modules\AutoSell\AutoSell.xml"/>
+	<Include file = "Modules\EasyMail\EasyMail.xml"/>
+	<Include file = "Modules\AutoBuy\AutoBuy.xml"/>
+	<Include file = "Modules\AutoShowChatFrameLink\AutoShowChatFrameLink.xml"/>
+	<Include file = "Modules\AutoQuest\AutoQuest.xml"/>
+	<Include file = "Modules\AuctionHelper\AuctionHelper.xml"/>
+	<Include file = "Modules\AdditionalCommand\AdditionalCommand.xml"/>
+	<Include file = "Modules\AutoOpen\AutoOpen.xml"/>
+	<Include file = "Modules\PetWatch\PetWatch.xml"/>
+	<Include file = "Modules\WorldMapScale\WorldMapScale.xml"/>
+	<!--Include file = "Modules\HightLightItem\HightLightItem.xml"/-->
+
+	<!-- Manager -->
+	<Script file = "Manager.Designer.lua"/>
+	<Script file = "Manager.Script.lua"/>
+</Ui>

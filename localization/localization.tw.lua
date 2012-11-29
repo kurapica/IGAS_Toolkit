@@ -1,4 +1,4 @@
-﻿local L = IGAS:NewLocale("IGAS_Toolkit")--, "zhTW")
+﻿local L = IGAS:NewLocale("IGAS_Toolkit", "zhTW")
 if not L then return end
 
 L["Toolkit Manager"] = "工具集管理箱"
@@ -78,3 +78,6 @@ L["Show collected pet"] = "顯示已收集野外寵物"
 L["Show not collected pet"] = "顯示未收集野外寵物"
 
 L["WorldMapScale"] = "世界地圖縮放記錄"
+
+L["AutoSplit"] = "自動分割"
+L["Auto"] = "自動"

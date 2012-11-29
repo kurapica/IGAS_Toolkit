@@ -18,11 +18,11 @@ function OnLoad(self)
 	if _DBChar.AutoBuyFormPos then
 		frmAutoBuy.Position = _DBChar.AutoBuyFormPos
 	end
-	
+
 	-- Events
 	self:RegisterEvent("MERCHANT_SHOW")
 	self:RegisterEvent("MERCHANT_CLOSED")
-	
+
 	self:SecureHook("BuyMerchantItem", "Hook_BuyMerchantItem")
 end
 
@@ -128,7 +128,7 @@ end
 function AutoBuy()
 	local link, itemId, need, maxStack, count
 
-	for _, index in pairs(lstBuy.Keys) do
+	for _, index in ipairs(lstBuy.Keys) do
 		link = GetMerchantItemLink(index)
 
 		if link then
@@ -156,7 +156,7 @@ end
 -------------------------------
 function Hook_BuyMerchantItem(index, quantity)
 	if _InAutoBuy then return end
-	
+
 	local link = GetMerchantItemLink(index)
 
 	if link then

@@ -78,3 +78,6 @@ L["Show collected pet"] = "显示已收集野外宠物"
 L["Show not collected pet"] = "显示未收集野外宠物"
 
 L["WorldMapScale"] = "世界地图缩放记录"
+
+L["AutoSplit"] = "自动分割"
+L["Auto"] = "自动"

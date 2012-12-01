@@ -40,10 +40,6 @@ end
 -- OnEnable
 function OnEnable(self)
 	_DisabledModule[_Name] = nil
-
-	_Addon:SecureHook("WorldMap_ToggleSizeDown", function(self)
-	    WorldMapFrame.Scale = _M._Scale
-	end)
 end
 
 -- OnDisable
@@ -55,9 +51,13 @@ function PLAYER_LOGOUT(self)
 	_DBChar.WorldMapScale.Scale = _M._Scale
 end
 
-_Addon:SecureHook("WorldMap_ToggleSizeDown", function(self)
+function ModifyWorldMap()
     WorldMapFrame.Scale = _M._Scale
     _Timer.Enabled = true
+end
+
+_M:SecureHook("WorldMap_ToggleSizeDown", function(self)
+	IFNoCombatTaskHandler._RegisterNoCombatTask(ModifyWorldMap)
 end)
 
 function IsMouseInWorldMap()

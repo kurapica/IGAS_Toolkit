@@ -13,9 +13,7 @@
 	<Include file = "Modules\AdditionalCommand\AdditionalCommand.xml"/>
 	<Include file = "Modules\AutoOpen\AutoOpen.xml"/>
 	<Include file = "Modules\AutoSplit\AutoSplit.xml"/>
-	<Include file = "Modules\PetWatch\PetWatch.xml"/>
 	<Include file = "Modules\WorldMapScale\WorldMapScale.xml"/>
-	<!--Include file = "Modules\HightLightItem\HightLightItem.xml"/-->
 
 	<!-- Manager -->
 	<Script file = "Manager.Designer.lua"/>

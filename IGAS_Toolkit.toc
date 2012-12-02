@@ -4,9 +4,8 @@
 ## Version: v1.8
 ## Notes: Some uesful tools.
 ## eMail: kurapica.igas@gmail.com
-## URL: http://www.cwowaddon.com
-## X-Embeds: IGAS
-## OptionalDeps: IGAS
+## URL: http://github.com/kurapica
+## Dependencies: IGAS
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariablesPerCharacter: IGAS_Toolkit_DB_Char

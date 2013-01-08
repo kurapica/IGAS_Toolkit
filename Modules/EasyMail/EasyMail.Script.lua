@@ -27,11 +27,11 @@ function OnLoad(self)
 	_DB.EasyMailChar = _DB.EasyMailChar or {}
 	_DB.EasyMailChar[GetRealmName()] = _DB.EasyMailChar[GetRealmName()] or {}
 	local _EasyMailChar = _DB.EasyMailChar[GetRealmName()]
-	
+
 	if #_EasyMailChar == 0 then
 		tinsert(_EasyMailChar, GetUnitName("player"))
 	end
-	
+
 	for i, name in ipairs(_EasyMailChar) do
 		if name == GetUnitName("player") then
 			break
@@ -40,7 +40,7 @@ function OnLoad(self)
 			tinsert(_EasyMailChar, GetUnitName("player"))
 		end
 	end
-	
+
 	_EasyMailRecent = _DBChar.EasyMailRecent
 	_EasyMailFriend = {}
 	_EasyMailGuild = {}
@@ -64,9 +64,10 @@ function OnEnable(self)
 	self:RegisterEvent("FRIENDLIST_UPDATE")
 	self:RegisterEvent("PLAYER_GUILD_UPDATE")
 	self:RegisterEvent("GUILD_ROSTER_UPDATE")
-	
+
 	self:SecureHook("SendMailFrame_SendMail", "AddtoRecent")
 	self:SecureHook("ContainerFrameItemButton_OnModifiedClick")
+	self:SecureHook("SendMailFrame_Reset", "RestoreRecent")
 end
 
 -- FRIENDLIST_UPDATE
@@ -131,6 +132,8 @@ function lstGuild_OnItemChoosed(self, key, item)
 	--AddtoRecent()
 end
 
+_RecentName = nil
+
 -- Functions
 function AddtoRecent()
 	local name = SendMailNameEditBox.Text
@@ -138,6 +141,8 @@ function AddtoRecent()
 	if not name or strtrim(name) == "" then
 		return
 	end
+
+	_RecentName = name
 
 	-- Refresh _EasyMailRecent
 	for i, v in ipairs(_EasyMailRecent) do
@@ -157,11 +162,18 @@ function AddtoRecent()
 	end
 end
 
-function LoadFriendThread()	
+function RestoreRecent()
+	if _RecentName then
+		SendMailNameEditBox.Text = _RecentName
+		_RecentName = nil
+	end
+end
+
+function LoadFriendThread()
 	local name
 
 	wipe(_EasyMailFriend)
-	
+
 	for index = 1, GetNumFriends() do
 		name = GetFriendInfo(index)
 		tinsert(_EasyMailFriend, name)
@@ -184,7 +196,7 @@ function LoadFriend()
 	end
 
 	_ThreadFriend.Thread = LoadFriendThread
-	
+
 	return _ThreadFriend()
 end
 
@@ -196,9 +208,9 @@ function LoadGuildThread()
 	for _, data in ipairs(_EasyMailGuild) do
 		wipe(data)
 	end
-	
+
 	maxRank = 0
-	
+
 	for index = 1, GetNumGuildMembers(1) do
 		name, rank, rankIndex = GetGuildRosterInfo(index)
 
@@ -218,14 +230,14 @@ function LoadGuildThread()
 
 				_EasyMailGuild[level] = {}
 				lstRank.Items = _EasyMailGuild[level]
-				
+
 				lstRank.OnItemChoosed = lstGuild_OnItemChoosed
 				_ThreadGuild:Sleep(_UpdateInterval)
 			end
 		end
 
 		tinsert(_EasyMailGuild[rankIndex], name)
-		
+
 		if not rankName[rankIndex] then
 			rankName[rankIndex] = rank
 		end
@@ -234,16 +246,16 @@ function LoadGuildThread()
 			_ThreadGuild:Sleep(_UpdateInterval)
 		end
 	end
-	
+
 	if maxRank < #_EasyMailGuild then
 		for level = #_EasyMailGuild, maxRank + 1, -1 do
 			_EasyMailGuild[level] = nil
 			mnuGuild:RemoveMenuButton(("Rank %d"):format(level))
 		end
 	end
-	
+
 	_GuildMembers = GetNumGuildMembers(1)
-	
+
 	for level = 1, #_EasyMailGuild do
 		mnuGuild:GetMenuButton(("Rank %d"):format(level)).Text = rankName[level] or "UnCertain"
 	end
@@ -255,11 +267,11 @@ function LoadGuild()
 	end
 
 	if _GuildMembers == GetNumGuildMembers(1) then return end
-	
+
 	Log(1, "Loading guild info for easymail.")
 
 	_ThreadGuild.Thread = LoadGuildThread
-	
+
 	return _ThreadGuild()
 end
 
@@ -268,9 +280,9 @@ function IsSoulBounded(bag, slot)
 
 	IGAS.GameTooltip:SetOwner(IGAS.UIParent)
 	IGAS.GameTooltip:SetAnchorType("ANCHOR_TOPRIGHT")
-	
+
 	IGAS.GameTooltip:SetBagItem(bag, slot)
-	
+
 	for i = 1, 5 do
 		if _G["GameTooltipTextLeft"..i] and _G["GameTooltipTextLeft"..i]:GetText() == ITEM_SOULBOUND then
 			soulBounded = true
@@ -278,41 +290,41 @@ function IsSoulBounded(bag, slot)
 		end
 	end
 	IGAS.GameTooltip:Hide()
-	
+
 	return soulBounded
 end
 
 function ContainerFrameItemButton_OnModifiedClick(self, button)
 	if btnDropdown.Visible and button == "RightButton" and IsModifiedClick("Alt") then
 		local itemId = GetContainerItemID(self:GetParent():GetID(), self:GetID())
-		
+
 		if not itemId then return end
-		
+
 		local _, _, itemRarity, _, _, _, _, _,equipLoc = GetItemInfo(itemId)
 		local locked
 		local rarity
-		
+
 		local emptyCnt = ATTACHMENTS_MAX_SEND
-		
+
 		for i=1, ATTACHMENTS_MAX_SEND do
 			-- get info about the attachment
 			if GetSendMailItem(i) then
 				emptyCnt = emptyCnt - 1
 			end
 		end
-		
+
 		if emptyCnt == 0 then return end
 
 		if equipLoc ~= "" and equipLoc ~= "INVTYPE_BODY" and equipLoc ~= "INVTYPE_TABARD" and equipLoc ~= "INVTYPE_BAG" and not IsSoulBounded(self:GetParent():GetID(), self:GetID()) then
 			for bag = NUM_BAG_FRAMES,0,-1 do
 				for slot = GetContainerNumSlots(bag),1,-1 do
 					if emptyCnt == 0 then return end
-					
+
 					itemId = GetContainerItemID(bag,slot)
 					if itemId then
 						_, _, locked = GetContainerItemInfo(bag,slot)
 						_, _, rarity, _, _, _, _, _,equipLoc = GetItemInfo(itemId)
-						
+
 						if not locked and rarity == itemRarity and equipLoc ~= "" and equipLoc ~= "INVTYPE_BODY" and equipLoc ~= "INVTYPE_TABARD" and equipLoc ~= "INVTYPE_BAG" and not IsSoulBounded(bag,slot) then
 							emptyCnt = emptyCnt - 1
 							UseContainerItem(bag,slot)
@@ -322,14 +334,14 @@ function ContainerFrameItemButton_OnModifiedClick(self, button)
 			end
 		elseif not IsSoulBounded(self:GetParent():GetID(), self:GetID()) then
 			local family = GetItemFamily(itemId)
-	
+
 			for bag = NUM_BAG_FRAMES,0,-1 do
 				for slot = GetContainerNumSlots(bag),1,-1 do
 					if emptyCnt == 0 then return end
-					
+
 					if itemId == GetContainerItemID(bag,slot) then
 						_, _, locked = GetContainerItemInfo(bag,slot)
-						
+
 						if not locked then
 							emptyCnt = emptyCnt - 1
 							UseContainerItem(bag,slot)
@@ -337,15 +349,15 @@ function ContainerFrameItemButton_OnModifiedClick(self, button)
 					end
 				end
 			end
-			
+
 			if _DBChar.EasyMailSendSameType and family > 0 then
 				for bag = NUM_BAG_FRAMES,0,-1 do
 					for slot = GetContainerNumSlots(bag),1,-1 do
 						if emptyCnt == 0 then return end
-						
+
 						if GetContainerItemID(bag,slot) and GetItemFamily(GetContainerItemID(bag,slot)) == family then
 							_, _, locked = GetContainerItemInfo(bag,slot)
-							
+
 							if not locked then
 								emptyCnt = emptyCnt - 1
 								UseContainerItem(bag,slot)

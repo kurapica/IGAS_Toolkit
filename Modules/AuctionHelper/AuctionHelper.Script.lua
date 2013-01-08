@@ -91,6 +91,7 @@ BIT_GEM = "1111"
 
 GLYPH_INDEX = 5
 GEM_INDEX = 8
+BATTLEPET_INDEX = 11
 
 MAX_HISTORY = 20
 DISPLAY_HISTORY = 10
@@ -284,12 +285,14 @@ function AuctionFrameBrowse_Search_Hook()
 			name = GetAuctionItemInfo("list", i)
 
 			if name == search then
-				_GameTooltip:SetOwner(IGAS.UIParent, "ANCHOR_TOPRIGHT")
+				--[[_GameTooltip:SetOwner(IGAS.UIParent, "ANCHOR_TOPRIGHT")
 				_GameTooltip:SetAuctionItem("list", i)
 				name, link = _GameTooltip:GetItem()
 				link = select(2, GetItemInfo(GetItemId(link)))
 
-				_GameTooltip:Hide()
+				_GameTooltip:Hide()--]]
+
+				link = GetAuctionItemLink("list", i)
 
 				-- Refresh _Items
 				for i, v in ipairs(_Items) do

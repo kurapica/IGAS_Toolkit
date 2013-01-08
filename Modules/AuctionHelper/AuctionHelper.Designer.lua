@@ -179,14 +179,22 @@ function Initialization()
 
 	function HistoryList:OnItemChoosed(key, text)
 		AuctionFrameBrowse_Reset(BrowseResetButton)
-		BrowseName:SetText(GetItemInfo(text))
+		BrowseName:SetText(text:match("%[(.+)%]") or "")
 		AuctionFrameBrowse_Search()
 		HistoryList:Hide()
 	end
 
 	function HistoryList:OnGameTooltipShow(GameTooltip, key, text)
-		GameTooltip:ClearLines()
-		GameTooltip:SetHyperlink(text)
+		--GameTooltip:ClearLines()
+		if not text:match("battlepet") then
+			GameTooltip:SetHyperlink(text)
+		else
+			local _, speciesID, level, breedQuality, maxHealth, power, speed, battlePetID = strsplit(":", text)
+			speciesID = speciesID and tonumber(speciesID)
+			if(speciesID and speciesID > 0) then
+				BattlePetToolTip_Show(speciesID, tonumber(level), tonumber(breedQuality), tonumber(maxHealth), tonumber(power), tonumber(speed))
+			end
+		end
 	end
 
 	function HistoryList:OnShow()

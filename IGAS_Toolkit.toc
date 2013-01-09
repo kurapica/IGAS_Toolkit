@@ -11,8 +11,6 @@
 ## SavedVariablesPerCharacter: IGAS_Toolkit_DB_Char
 ## SavedVariables: IGAS_Toolkit_DB
 
-embeds.xml
-
 localization\localization.lua
 localization\localization.cn.lua
 localization\localization.tw.lua

@@ -10,14 +10,15 @@ _Scale = 1
 _HiddenTime = 3
 
 _Frame = {
-	WorldMapFrameMiniBorderLeft,
-	WorldMapFrameMiniBorderRight,
-	WorldMapFrameTitle,
-	WorldMapFrameSizeUpButton,
-	WorldMapFrameCloseButton,
-	WorldMapTrackQuest,
-	WorldMapQuestShowObjectives,
-	WorldMapShowDigSites,
+	"WorldMapFrameMiniBorderLeft",
+	"WorldMapFrameMiniBorderRight",
+	"WorldMapFrameTitle",
+	"WorldMapFrameSizeUpButton",
+	"WorldMapFrameCloseButton",
+	"WorldMapTrackQuest",
+	"WorldMapQuestShowObjectives",
+	"WorldMapShowDigSites",
+	"WorldMapShowDropDown",
 }
 
 _Timer = System.Widget.Timer("AlphaTimer", WorldMapFrame)
@@ -75,7 +76,9 @@ end
 
 function WorldMapButton:OnEnter()
 	for _, f in ipairs(_Frame) do
-		f.Alpha = 1
+		if _G[f] then
+			_G[f]:SetAlpha(1)
+		end
 	end
 end
 
@@ -95,7 +98,9 @@ function _Timer:OnTimer()
 	if self._Final < 0 then
 		self._Final = nil
 		for _, f in ipairs(_Frame) do
-			f.Alpha = 0
+			if _G[f] then
+				_G[f]:SetAlpha(0)
+			end
 		end
 		self.Enabled = false
 	end

@@ -15,7 +15,7 @@ _WaitTime = 0.3
 
 -- OnLoad
 function OnLoad(self)
-	-- Init
+	--[[ Init
 	btnUnReturn = NormalButton("IGAS_Toolkit_AutoQuest_UnReturn", QuestLogFrame)
 
 	btnUnReturn.Style = "Classic"
@@ -23,7 +23,7 @@ function OnLoad(self)
 	btnUnReturn.Height = 24
 	btnUnReturn:SetPoint("RIGHT", QuestLogFrameCancelButton, "LEFT")
 	btnUnReturn:ActiveThread("OnClick")
-	btnUnReturn.OnClick = btnUnReturn_OnClick
+	btnUnReturn.OnClick = btnUnReturn_OnClick --]]
 
 	-- SavedVariables
 	_DB.AutoQuest = _DB.AutoQuest or {}
@@ -42,10 +42,10 @@ function OnLoad(self)
 	self:RegisterEvent("QUEST_DETAIL")
 	self:RegisterEvent("QUEST_ACCEPTED")
 
-	--self:RegisterEvent("MERCHANT_SHOW")
-	--self:RegisterEvent("MERCHANT_CLOSED")
-	--self:RegisterEvent("BAG_OPEN")
-	--self:RegisterEvent("BAG_CLOSED")
+	self:RegisterEvent("MERCHANT_SHOW")
+	self:RegisterEvent("MERCHANT_CLOSED")
+	self:RegisterEvent("BAG_OPEN")
+	self:RegisterEvent("BAG_CLOSED")
 
 	self:SecureHook("AbandonQuest")
 	_DBChar.AutoQuestCanNotReturn = nil
@@ -59,14 +59,14 @@ end
 -- OnEnable
 function OnEnable(self)
 	_DisabledModule[_Name] = nil
-	--System.Threading.Sleep(3)
-	--self:RegisterEvent("BAG_UPDATE")	-- Delay register to reduce cost
+	System.Threading.Sleep(3)
+	self:RegisterEvent("BAG_NEW_ITEMS_UPDATED")	-- Delay register to reduce cost
 end
 
 -- OnDisable
 function OnDisable(self)
 	_DisabledModule[_Name] = true
-	btnUnReturn.Visible = false
+	--btnUnReturn.Visible = false
 end
 
 -- Events
@@ -112,24 +112,24 @@ function QUEST_DETAIL(self)
 		_AcceptCount = _AcceptCount - 1
 	end
 end
---[[
+
 function MERCHANT_SHOW(self)
-	self:UnregisterEvent("BAG_UPDATE")
+	self:UnregisterEvent("BAG_NEW_ITEMS_UPDATED")
 end
 
 function MERCHANT_CLOSED(self)
-	self:RegisterEvent("BAG_UPDATE")
+	self:RegisterEvent("BAG_NEW_ITEMS_UPDATED")
 end
 
 function BAG_OPEN(self)
-	self:UnregisterEvent("BAG_UPDATE")
+	self:UnregisterEvent("BAG_NEW_ITEMS_UPDATED")
 end
 
 function BAG_CLOSED(self)
-	self:RegisterEvent("BAG_UPDATE")
+	self:RegisterEvent("BAG_NEW_ITEMS_UPDATED")
 end
 
-function BAG_UPDATE(self)
+function BAG_NEW_ITEMS_UPDATED(self)
 	local isQuest, questId, isActive
 
 	for bag = NUM_BAG_FRAMES,0,-1 do
@@ -143,7 +143,6 @@ function BAG_UPDATE(self)
 		end
 	end
 end
---]]
 
 function SelectActiveQuest(index, name, level, isTrivial, isFinished, ...)
 	if not name then
@@ -266,7 +265,7 @@ function QuestFrameCompleteQuestButton:OnShow()
 		end
 	end
 end
-
+--[[
 function btnUnReturn_OnClick()
 	local index = GetQuestLogSelection()
 
@@ -291,7 +290,7 @@ function btnUnReturn_OnClick()
 	else
 		btnUnReturn.Text = L["Un-AutoReturn"]
 	end
-end
+end]]
 
 function AbandonQuest()
 	local questText = GetAbandonQuestName()
@@ -302,7 +301,7 @@ function AbandonQuest()
 	_AcceptedQeust[questText] = nil
 	_AutoQuest[questText] = nil
 end
-
+--[[
 function QuestLog_SetSelection(questIndex)
 	if not _DBChar.AutoQuestCanNotReturn then
 		btnUnReturn.Visible = false
@@ -322,4 +321,4 @@ function QuestLog_SetSelection(questIndex)
 	end
 
 	btnUnReturn.Visible = true
-end
+end]]

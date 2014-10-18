@@ -6,7 +6,7 @@ IGAS:NewAddon "IGAS_Toolkit.AutoQuest"
 
 Options = {
 	AutoQuestAcceptAll = L["Accept All"],
-	AutoQuestCanNotReturn = L["Not auto return special quest"],
+	--AutoQuestCanNotReturn = L["Not auto return special quest"],
 }
 
 _AcceptedQeust = {}
@@ -41,13 +41,15 @@ function OnLoad(self)
 	self:RegisterEvent("GOSSIP_SHOW")
 	self:RegisterEvent("QUEST_DETAIL")
 	self:RegisterEvent("QUEST_ACCEPTED")
-	self:RegisterEvent("MERCHANT_SHOW")
-	self:RegisterEvent("MERCHANT_CLOSED")
-	self:RegisterEvent("BAG_OPEN")
-	self:RegisterEvent("BAG_CLOSED")
+
+	--self:RegisterEvent("MERCHANT_SHOW")
+	--self:RegisterEvent("MERCHANT_CLOSED")
+	--self:RegisterEvent("BAG_OPEN")
+	--self:RegisterEvent("BAG_CLOSED")
 
 	self:SecureHook("AbandonQuest")
-	self:SecureHook("QuestLog_SetSelection")
+	_DBChar.AutoQuestCanNotReturn = nil
+	--self:SecureHook("QuestLog_SetSelection")
 
 	self:ActiveThread("OnEnable")
 end
@@ -57,8 +59,8 @@ end
 -- OnEnable
 function OnEnable(self)
 	_DisabledModule[_Name] = nil
-	System.Threading.Sleep(3)
-	self:RegisterEvent("BAG_UPDATE")	-- Delay register to reduce cost
+	--System.Threading.Sleep(3)
+	--self:RegisterEvent("BAG_UPDATE")	-- Delay register to reduce cost
 end
 
 -- OnDisable
@@ -110,7 +112,7 @@ function QUEST_DETAIL(self)
 		_AcceptCount = _AcceptCount - 1
 	end
 end
-
+--[[
 function MERCHANT_SHOW(self)
 	self:UnregisterEvent("BAG_UPDATE")
 end
@@ -141,6 +143,7 @@ function BAG_UPDATE(self)
 		end
 	end
 end
+--]]
 
 function SelectActiveQuest(index, name, level, isTrivial, isFinished, ...)
 	if not name then
@@ -198,8 +201,8 @@ function QuestFrameAcceptButton:OnShow()
 		if ( QuestFlagsPVP() ) then
 			return
 		else
-			if ( _G.QuestFrame.autoQuest ) then
-				HideUIPanel(QuestFrame)
+			if QuestGetAutoAccept() and QuestIsFromAreaTrigger() then
+				CloseQuest()
 			else
 				AcceptQuest()
 			end
@@ -249,7 +252,7 @@ function QuestFrameCompleteQuestButton:OnShow()
 			end
 
 			if index > 0 then
-				QuestInfoItem_OnClick(_G["QuestInfoItem"..index])
+				QuestInfoItem_OnClick(_G["QuestInfoRewardsFrameQuestInfoItem"..index])
 			end
 
 			return

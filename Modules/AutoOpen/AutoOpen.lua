@@ -19,17 +19,24 @@ function OnLoad(self)
 	_AutoOpenList = _DBChar.AutoOpenList
 
 	-- Events
-	self:RegisterEvent("BAG_NEW_ITEMS_UPDATED")
+	self:RegisterEvent("MERCHANT_SHOW")
+	self:RegisterEvent("MERCHANT_CLOSED")
+	self:RegisterEvent("BAG_OPEN")
+	self:RegisterEvent("BAG_CLOSED")
 
 	-- Hook
 	self:SecureHook("ContainerFrameItemButton_OnModifiedClick")
 
 	_Thread = System.Threading.Thread()
+
+	self:ActiveThread("OnEnable")
 end
 
 -- OnEnable
 function OnEnable(self)
 	_DisabledModule[_Name] = nil
+	System.Threading.Sleep(3)
+	self:RegisterEvent("BAG_UPDATE")
 end
 
 -- OnDisable
@@ -37,7 +44,23 @@ function OnDisable(self)
 	_DisabledModule[_Name] = true
 end
 
-function BAG_NEW_ITEMS_UPDATED(self)
+function MERCHANT_SHOW(self)
+	self:UnregisterEvent("BAG_UPDATE")
+end
+
+function MERCHANT_CLOSED(self)
+	self:RegisterEvent("BAG_UPDATE")
+end
+
+function BAG_OPEN(self)
+	self:UnregisterEvent("BAG_UPDATE")
+end
+
+function BAG_CLOSED(self)
+	self:RegisterEvent("BAG_UPDATE")
+end
+
+function BAG_UPDATE(self, bag)
 	if InCombatLockdown() then
 		return
 	end
@@ -48,7 +71,7 @@ function BAG_NEW_ITEMS_UPDATED(self)
 
 	_Thread.Thread = AutoOpenBag
 
-	return _Thread()
+	return _Thread(bag)
 end
 
 function ContainerFrameItemButton_OnModifiedClick(self, button)
@@ -64,20 +87,22 @@ function ContainerFrameItemButton_OnModifiedClick(self, button)
 
 			_AutoOpenList[itemId] = true
 
-			BAG_NEW_ITEMS_UPDATED()
+			BAG_UPDATE()
 		end
 	end
 end
 
-function AutoOpenBag()
+function AutoOpenBag(target)
 	local _, itemId, locked, lootable
 
 	local lootUnderMouse = GetCVar("lootUnderMouse")
 
+	_Thread:Sleep(0.1)
+
 	SetCVar("lootUnderMouse", "0")
 	LootFrame:SetAlpha(0)
 
-	for bag = NUM_BAG_FRAMES, 0, -1 do
+	for bag = target or NUM_BAG_FRAMES, target or 0, -1 do
 		for slot = GetContainerNumSlots(bag), 1, -1 do
 			itemId = GetContainerItemID(bag, slot)
 			_, _, locked, _, _, lootable = GetContainerItemInfo(bag, slot)

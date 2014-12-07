@@ -60,7 +60,7 @@ end
 function OnEnable(self)
 	_DisabledModule[_Name] = nil
 	System.Threading.Sleep(3)
-	self:RegisterEvent("BAG_NEW_ITEMS_UPDATED")	-- Delay register to reduce cost
+	self:RegisterEvent("BAG_UPDATE")
 end
 
 -- OnDisable
@@ -114,32 +114,30 @@ function QUEST_DETAIL(self)
 end
 
 function MERCHANT_SHOW(self)
-	self:UnregisterEvent("BAG_NEW_ITEMS_UPDATED")
+	self:UnregisterEvent("BAG_UPDATE")
 end
 
 function MERCHANT_CLOSED(self)
-	self:RegisterEvent("BAG_NEW_ITEMS_UPDATED")
+	self:RegisterEvent("BAG_UPDATE")
 end
 
 function BAG_OPEN(self)
-	self:UnregisterEvent("BAG_NEW_ITEMS_UPDATED")
+	self:UnregisterEvent("BAG_UPDATE")
 end
 
 function BAG_CLOSED(self)
-	self:RegisterEvent("BAG_NEW_ITEMS_UPDATED")
+	self:RegisterEvent("BAG_UPDATE")
 end
 
-function BAG_NEW_ITEMS_UPDATED(self)
+function BAG_UPDATE(self, bag)
 	local isQuest, questId, isActive
 
-	for bag = NUM_BAG_FRAMES,0,-1 do
-		for slot = GetContainerNumSlots(bag),1,-1 do
-			isQuest, questId, isActive = GetContainerItemQuestInfo(bag, slot)
+	for slot = GetContainerNumSlots(bag),1,-1 do
+		isQuest, questId, isActive = GetContainerItemQuestInfo(bag, slot)
 
-			if questId and (not isActive) then
-				Log(1, "[AutoQuest] Item Quest Get %s.", questId)
-				UseContainerItem(bag,slot)
-			end
+		if questId and (not isActive) then
+			Log(1, "[AutoQuest] Item Quest Get %s.", questId)
+			UseContainerItem(bag,slot)
 		end
 	end
 end

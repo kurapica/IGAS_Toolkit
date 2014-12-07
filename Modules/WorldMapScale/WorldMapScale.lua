@@ -58,7 +58,7 @@ function ModifyWorldMap()
 end
 
 _M:SecureHook("WorldMap_ToggleSizeDown", function(self)
-	IFNoCombatTaskHandler._RegisterNoCombatTask(ModifyWorldMap)
+	Task.NoCombatCall(ModifyWorldMap)
 end)
 
 function IsMouseInWorldMap()

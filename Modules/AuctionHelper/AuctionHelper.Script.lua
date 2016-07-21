@@ -236,38 +236,14 @@ function USE_GLYPH(self)
 	end
 end
 
--- GameTooltip_OnShow
-function GameTooltip_OnShow(self)
-	if not _Enabled or not _DBChar.AuctionHelperGlyphHelper then return end
-
-	local name = self:GetLeftText(1)
-
-	if name and _TempGlyph[name] then
-		local found = false
-
-		for player, dt in pairs(_Glyph) do
-			if dt[name] then
-				if not found then
-					found = true
-					self:AddLine(" ")
-				end
-				self:AddDoubleLine(L["Needed By"], player)
-			end
-		end
-	end
-end
-
 -- Hook
 function AuctionFrameFilter_OnClick(self, button)
 	if _Enabled and _DBChar.AuctionHelperGemHelper and _G.AuctionFrameBrowse.selectedClassIndex == GEM_INDEX then
 		frmGemHelper.Visible = true
-		frmGlyphHelper.Visible = false
 	elseif _Enabled and _DBChar.AuctionHelperGlyphHelper and _G.AuctionFrameBrowse.selectedClassIndex == GLYPH_INDEX then
 		frmGemHelper.Visible = false
-		frmGlyphHelper.Visible = true
 	else
 		frmGemHelper.Visible = false
-		frmGlyphHelper.Visible = false
 	end
 end
 
@@ -815,23 +791,4 @@ function ClearGemData()
 	cboMainProp:Clear()
 	cboSecProp:Clear()
 	lstGem:Clear()
-end
-
-function BuildGlyphList()
-	local player = cboPlayer.Value
-
-	if not player then
-		lstGlyph:Clear()
-		return
-	end
-
-	lstGlyph:SuspendLayout()
-	lstGlyph:Clear()
-
-	for name, id in pairs(_Glyph[player]) do
-		lstGlyph:AddItem(id, name)
-	end
-
-	_GameTooltip:Hide()
-	lstGlyph:ResumeLayout()
 end

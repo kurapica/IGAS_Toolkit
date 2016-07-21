@@ -9,7 +9,7 @@
 	<Include file = "Modules\AutoBuy\AutoBuy.xml"/>
 	<Include file = "Modules\AutoShowChatFrameLink\AutoShowChatFrameLink.xml"/>
 	<Include file = "Modules\AutoQuest\AutoQuest.xml"/>
-	<Include file = "Modules\AuctionHelper\AuctionHelper.xml"/>
+	<!--Include file = "Modules\AuctionHelper\AuctionHelper.xml"/-->
 	<Include file = "Modules\AdditionalCommand\AdditionalCommand.xml"/>
 	<Include file = "Modules\AutoOpen\AutoOpen.xml"/>
 	<Include file = "Modules\AutoSplit\AutoSplit.xml"/>

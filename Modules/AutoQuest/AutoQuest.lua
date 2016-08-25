@@ -62,7 +62,7 @@ end
 function OnEnable(self)
 	_DisabledModule[_Name] = nil
 	System.Threading.Sleep(3)
-	self:RegisterEvent("BAG_UPDATE_DELAYED")
+	self:RegisterEvent("BAG_UPDATE")
 end
 
 -- OnDisable
@@ -116,30 +116,30 @@ function QUEST_DETAIL(self)
 end
 
 function MERCHANT_SHOW(self)
-	self:UnregisterEvent("BAG_UPDATE_DELAYED")
+	self:UnregisterEvent("BAG_UPDATE")
 end
 
 function MERCHANT_CLOSED(self)
-	self:RegisterEvent("BAG_UPDATE_DELAYED")
+	self:RegisterEvent("BAG_UPDATE")
 end
 
 function BANKFRAME_OPENED(self)
-	self:UnregisterEvent("BAG_UPDATE_DELAYED")
+	self:UnregisterEvent("BAG_UPDATE")
 end
 
 function BANKFRAME_CLOSED(self)
-	self:RegisterEvent("BAG_UPDATE_DELAYED")
+	self:RegisterEvent("BAG_UPDATE")
 end
 
 function BAG_OPEN(self)
-	self:UnregisterEvent("BAG_UPDATE_DELAYED")
+	self:UnregisterEvent("BAG_UPDATE")
 end
 
 function BAG_CLOSED(self)
-	self:RegisterEvent("BAG_UPDATE_DELAYED")
+	self:RegisterEvent("BAG_UPDATE")
 end
 
-function BAG_UPDATE_DELAYED(self, bag)
+function BAG_UPDATE(self, bag)
 	local isQuest, questId, isActive
 
 	for slot = GetContainerNumSlots(bag),1,-1 do

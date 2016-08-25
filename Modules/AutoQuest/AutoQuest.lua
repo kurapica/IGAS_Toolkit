@@ -46,6 +46,8 @@ function OnLoad(self)
 	self:RegisterEvent("MERCHANT_CLOSED")
 	self:RegisterEvent("BAG_OPEN")
 	self:RegisterEvent("BAG_CLOSED")
+	self:RegisterEvent("BANKFRAME_OPENED")
+	self:RegisterEvent("BANKFRAME_CLOSED")
 
 	self:SecureHook("AbandonQuest")
 	_DBChar.AutoQuestCanNotReturn = nil
@@ -60,7 +62,7 @@ end
 function OnEnable(self)
 	_DisabledModule[_Name] = nil
 	System.Threading.Sleep(3)
-	self:RegisterEvent("BAG_UPDATE")
+	self:RegisterEvent("BAG_UPDATE_DELAYED")
 end
 
 -- OnDisable
@@ -114,22 +116,30 @@ function QUEST_DETAIL(self)
 end
 
 function MERCHANT_SHOW(self)
-	self:UnregisterEvent("BAG_UPDATE")
+	self:UnregisterEvent("BAG_UPDATE_DELAYED")
 end
 
 function MERCHANT_CLOSED(self)
-	self:RegisterEvent("BAG_UPDATE")
+	self:RegisterEvent("BAG_UPDATE_DELAYED")
+end
+
+function BANKFRAME_OPENED(self)
+	self:UnregisterEvent("BAG_UPDATE_DELAYED")
+end
+
+function BANKFRAME_CLOSED(self)
+	self:RegisterEvent("BAG_UPDATE_DELAYED")
 end
 
 function BAG_OPEN(self)
-	self:UnregisterEvent("BAG_UPDATE")
+	self:UnregisterEvent("BAG_UPDATE_DELAYED")
 end
 
 function BAG_CLOSED(self)
-	self:RegisterEvent("BAG_UPDATE")
+	self:RegisterEvent("BAG_UPDATE_DELAYED")
 end
 
-function BAG_UPDATE(self, bag)
+function BAG_UPDATE_DELAYED(self, bag)
 	local isQuest, questId, isActive
 
 	for slot = GetContainerNumSlots(bag),1,-1 do

@@ -66,7 +66,7 @@ function OnEnable(self)
 	self:RegisterEvent("GUILD_ROSTER_UPDATE")
 
 	self:SecureHook("SendMailFrame_SendMail", "AddtoRecent")
-	self:SecureHook("ContainerFrameItemButton_OnModifiedClick")
+	--self:SecureHook("ContainerFrameItemButton_OnModifiedClick")
 	self:SecureHook("SendMailFrame_Reset", "RestoreRecent")
 end
 

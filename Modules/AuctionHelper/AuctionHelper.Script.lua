@@ -89,21 +89,19 @@ BIT_YELLOW = binit(3)
 BIT_META = binit(4)
 BIT_GEM = "1111"
 
-GLYPH_INDEX = 5
-GEM_INDEX = 8
+GEM_INDEX = 4
 BATTLEPET_INDEX = 11
 
 MAX_HISTORY = 20
 DISPLAY_HISTORY = 10
 
-NUM_AUCTION_ITEMS_PER_PAGE = _NUM_AUCTION_ITEMS_PER_PAGE
+NUM_AUCTION_ITEMS_PER_PAGE = _G.NUM_AUCTION_ITEMS_PER_PAGE
 
 _GameTooltip = IGAS.GameTooltip
 
 Options = {
 	AuctionHelperHistory = L["Show Search History"],
 	AuctionHelperGemHelper = L["Show Gem Helper"],
-	AuctionHelperGlyphHelper = L["Show Glyph Helper"],
 }
 
 -- OnLoad
@@ -123,21 +121,8 @@ function OnLoad(self)
 		META_GEM,
 	}
 
-	_DB.GlyphReminder = _DB.GlyphReminder or {}
-	_DB.GlyphReminder[GetRealmName()] = _DB.GlyphReminder[GetRealmName()] or {}
-	_Player = GetUnitName("player")
-
 	_Gems = _DB.GemHelper_Gems
 	_Props = _DB.GemHelper_GemProps
-	_Glyph = _DB.GlyphReminder[GetRealmName()]
-
-	_TempGlyph = _TempGlyph or {}
-
-	for _, dt in pairs(_Glyph) do
-		for name, id in pairs(dt) do
-			_TempGlyph[name] = id
-		end
-	end
 
 	_PropsIndex = {}
 
@@ -155,12 +140,9 @@ function OnLoad(self)
 	BuildData()
 
 	self:RegisterEvent("ADDON_LOADED")
-	self:RegisterEvent("USE_GLYPH")
 
 	-- HistoryThread
 	_ThreadHistory = System.Threading.Thread()
-
-	_GameTooltip.OnShow = _GameTooltip.OnShow + GameTooltip_OnShow
 end
 
 -- OnEnable
@@ -170,8 +152,6 @@ function OnEnable(self)
 	if Initialization and _G.AuctionFrameFilter_OnClick then
 		ADDON_LOADED(self, "Blizzard_AuctionUI")
 	end
-
-	USE_GLYPH(self)
 end
 
 -- OnDisable
@@ -196,52 +176,10 @@ function ADDON_LOADED(self, name)
 	end
 end
 
--- USE_GLYPH
-function USE_GLYPH(self)
-	-- Rescan player's glyph info
-	_Glyph[_Player] = _Glyph[_Player] or {}
-
-	local name, glyphType, isKnown, icon, glyphId, glyphLink
-
-	for i = 1, GetNumGlyphs() do
-		name, glyphType, isKnown, icon, glyphId, glyphLink = GetGlyphInfo(i)
-
-		name = glyphLink and glyphLink:match("%[(.*)%]")
-
-		if name then
-			if not isKnown and not _Glyph[_Player][name] then
-				_Glyph[_Player][name] = glyphId
-				_TempGlyph[name] = glyphId
-			elseif isKnown and _Glyph[_Player][name] then
-				for n, id in pairs(_Glyph[_Player]) do
-					if id == glyphId then
-						_Glyph[_Player][n] = nil
-
-						local chk = false
-
-						for _, dt in pairs(_Glyph) do
-							if dt[n] then
-								chk = true
-								break
-							end
-						end
-
-						if not chk then
-							_TempGlyph[n] = nil
-						end
-					end
-				end
-			end
-		end
-	end
-end
-
 -- Hook
 function AuctionFrameFilter_OnClick(self, button)
-	if _Enabled and _DBChar.AuctionHelperGemHelper and _G.AuctionFrameBrowse.selectedClassIndex == GEM_INDEX then
+	if _Enabled and _DBChar.AuctionHelperGemHelper and _G.AuctionFrameBrowse.selectedCategoryIndex == GEM_INDEX then
 		frmGemHelper.Visible = true
-	elseif _Enabled and _DBChar.AuctionHelperGlyphHelper and _G.AuctionFrameBrowse.selectedClassIndex == GLYPH_INDEX then
-		frmGemHelper.Visible = false
 	else
 		frmGemHelper.Visible = false
 	end
@@ -316,11 +254,11 @@ function ScanGem()
 	local text, lowtext
 	local maxS, start
 
-	for colorIndex = 1, 7 do
+	for colorIndex = 2, 12 do
 		page = 0
 		total = 0
 
-		if colorIndex == 7 and not split then
+		if colorIndex == 12 and not split then
 			if next(unHandle) then
 				-- compare to get the split
 				if not split or split == "" then
@@ -428,7 +366,7 @@ function ScanGem()
 				System.Threading.Sleep(0.1)
 			end
 
-			QueryAuctionItems("", "", "", nil, GEM_INDEX, colorIndex, page, nil, -1)
+			QueryAuctionItems("", 0, 110, page, false, 0, false, false, AuctionCategories[GEM_INDEX].subCategories[colorIndex].filters)
 
 			System.Threading.WaitEvent("AUCTION_ITEM_LIST_UPDATE")
 
@@ -470,7 +408,7 @@ function ScanGem()
 							end
 
 							if bonus ~= "0" then
-								if colorIndex < 4 then
+								if colorIndex < 11 then
 									-- simple gem
 									if text:find("+") then
 										prop = text:match("+%d+%s*(.*)$")
@@ -486,7 +424,7 @@ function ScanGem()
 											bonus = bor(bonus, _PropsIndex[prop])
 										end
 									end
-								elseif colorIndex < 7 then
+								elseif colorIndex < 12 then
 									-- mixed gem
 									if text:find("+") then
 										prop, sprop = text:match("+%d+%s*([^%+]*)+%d+%s*(.*)$")

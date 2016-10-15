@@ -75,18 +75,13 @@ function frmManager:OnShow()
 	tabManager:SelectWidget(1)
 
 	if mdlTree.ChildNodeCount == 0 and disTree.ChildNodeCount == 0 then
-		local lst = _Addon:GetModules()
+		local lst = _Addon:GetModules{}
 		local mdl
 
 		mdlTree:SuspendLayout()
 		disTree:SuspendLayout()
 
-		for i = 1, #lst do
-			if lst[i] ~= _M then
-				lst[lst[i]._Name] = true
-			end
-			lst[i] = nil
-		end
+		lst[_M._Name] = nil
 
 		for i = #_ManagerMdlSort, 1, -1 do
 			if not lst[_ManagerMdlSort[i]] then

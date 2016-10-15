@@ -42,12 +42,12 @@ function OnLoad(self)
 	self:RegisterEvent("QUEST_DETAIL")
 	self:RegisterEvent("QUEST_ACCEPTED")
 
-	self:RegisterEvent("MERCHANT_SHOW")
-	self:RegisterEvent("MERCHANT_CLOSED")
-	self:RegisterEvent("BAG_OPEN")
-	self:RegisterEvent("BAG_CLOSED")
-	self:RegisterEvent("BANKFRAME_OPENED")
-	self:RegisterEvent("BANKFRAME_CLOSED")
+	--self:RegisterEvent("MERCHANT_SHOW")
+	--self:RegisterEvent("MERCHANT_CLOSED")
+	--self:RegisterEvent("BAG_OPEN")
+	--self:RegisterEvent("BAG_CLOSED")
+	--self:RegisterEvent("BANKFRAME_OPENED")
+	--self:RegisterEvent("BANKFRAME_CLOSED")
 
 	self:SecureHook("AbandonQuest")
 	_DBChar.AutoQuestCanNotReturn = nil
@@ -62,7 +62,7 @@ end
 function OnEnable(self)
 	_DisabledModule[_Name] = nil
 	System.Threading.Sleep(3)
-	self:RegisterEvent("BAG_UPDATE")
+	--self:RegisterEvent("BAG_UPDATE")
 end
 
 -- OnDisable

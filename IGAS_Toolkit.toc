@@ -1,7 +1,7 @@
-## Interface: 70000
+## Interface: 70100
 ## Title: IGAS_Toolkit
 ## Author: kurapica.igas@gmail.com
-## Version: v1.10
+## Version: v1.11
 ## Notes: Some uesful tools.
 ## eMail: kurapica.igas@gmail.com
 ## URL: http://github.com/kurapica
